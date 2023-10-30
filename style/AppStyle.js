@@ -2,10 +2,11 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex:2/3,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'black',
+    backgroundColor: '#dfa851',
+    
   },
   questionContainer:{
   
@@ -44,11 +45,17 @@ answerText:{
 
   
 },
-resetButton:{
-  flexDirection:'row',
-
+nextButton:{
+  width:200,
+  height:40,
+ 
+   
   
 },
+myButton:{
+ flex:10,
+ 
 
+}
 
 });

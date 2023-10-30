@@ -12,6 +12,8 @@ export default function App() {
   const [goNext,setGoNext]=useState(false);
   const [score,setScore]=useState(0);
   const [answerColor,setAnswerColor]=useState(['blue','blue','blue','blue'])
+  
+  
   const renderItem = ({ item,index}) => (
     <View style={styles.answerOption}>
       <Button style={styles.answerText} title={item}
@@ -60,10 +62,12 @@ const nextQuestion=()=>{
 
 
   return (
+    
+    
     <View style={styles.container}>
     
       <View style={styles.questionContainer}>
-        
+    
         
         <Text style={{textAlign:'center',backgroundColor:'red'}}>questionNo:{`${score}/${questionNo+1}`}</Text>
       
@@ -73,19 +77,17 @@ const nextQuestion=()=>{
         
       </View>
          
-         
-         {goNext?(<View style={styles.resetButton}>
-           <Button style={styles.myButton}title="reset" onPress={()=>{
-           //reset
-           setQuestionNo(0)
-           setScore(0)
-         }}
-         />
+          <View style={styles.nextButton}>
+         {goNext?(
+        
+
          <Button title="next" onPress={nextQuestion}/>
-         </View>):null
-         }
+         ):null
+         
+    }     
+    </View>
       
-      
+     
       
       
       
@@ -95,7 +97,15 @@ const nextQuestion=()=>{
         renderItem={renderItem}
         numColumns={2} // Set the number of columns as needed
       />
-     
+      <View style={styles.myButton} >
+  <Button title="reset" onPress={()=>{
+           //reset
+           setQuestionNo(0)
+           setScore(0)
+           setAnswerColor(prev=>prev.map(color=>'blue'));
+         }}
+         />
+         </View>
     </View>
   );
 }
