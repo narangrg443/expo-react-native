@@ -1,53 +1,42 @@
-import * as React from 'react';
-import { Text, View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
-import { Ionicons } from '@expo/vector-icons';
-function HomeScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Home!</Text>
-    </View>
-  );
-}
-
-function SettingsScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Settings!</Text>
-    </View>
-  );
-}
-
-const Tab = createBottomTabNavigator();
+import React, { useState, useEffect } from 'react';
+import { Text, View, FlatList, StyleSheet } from 'react-native';
+import styles from './style/AppStyle';
 
 export default function App() {
+  const [data, setData] = useState([]);
+
+  const getApi = async () => {
+    try {
+      const url = 'https://jsonplaceholder.typicode.com/posts';
+      const res = await fetch(url);
+      if (!res.ok) {
+        throw new Error('No response');
+      } else {
+        const jsonData = await res.json();
+        setData(jsonData);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  useEffect(() => {
+    getApi();
+  }, []);
+
   return (
-    <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
-            let iconName;
-
-            if (route.name === 'Home') {
-              iconName = focused
-                ? 'ios-information-circle'
-                : 'ios-information-circle-outline';
-            } else if (route.name === 'Settings') {
-              iconName = 'ios-list'
-            }
-
-            // You can return any component that you like here!
-            return <Ionicons name={iconName} size={size} color={color} />;
-          },
-          tabBarActiveTintColor: 'tomato',
-          tabBarInactiveTintColor: 'gray',
-        })}
-      >
-        <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarBadge: 1 }} />
-        <Tab.Screen name="Settings" component={SettingsScreen} />
-      </Tab.Navigator>
-    </NavigationContainer>
+    <View style={styles.container}>
+      {
+        data.length > 0 ? (
+          <FlatList
+            data={data}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <Text>{item.id}: {item.title}</Text>
+            )}
+          />
+        ) : null
+      }
+    </View>
   );
 }
