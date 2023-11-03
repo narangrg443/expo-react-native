@@ -11,6 +11,8 @@ export default function App() {
   const [message, setMessage] = useState('');
   const [users, setUsers] = useState([]);
   const [showUsers, setShowUsers] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [searchName, setSearchName] = useState('');
 
   const postData = async () => {
     const dataToPost = {
@@ -53,8 +55,74 @@ export default function App() {
     }
   };
 
+  const deleteUser = async (userId) => {
+    try {
+      const response = await fetch(`${getUsersUrl}/${userId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setMessage('User deleted successfully');
+        setUsers(users.filter((user) => user.id !== userId));
+      } else {
+        setMessage('Failed to delete user');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const updateUser = async () => {
+    const updatedUser = {
+      name: name,
+      age: age,
+      email: email,
+    };
+
+    try {
+      const response = await fetch(`${getUsersUrl}/${selectedUserId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedUser),
+      });
+
+      if (response.ok) {
+        setMessage('User updated successfully');
+        setUsers((prevUsers) =>
+          prevUsers.map((user) =>
+            user.id === selectedUserId ? { ...user, ...updatedUser } : user
+          )
+        );
+      } else {
+        setMessage('Failed to update user');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const filterUsers = () => {
+    const filteredUsers = users.filter((user) =>
+      user.name.toLowerCase().includes(searchName.toLowerCase())
+    );
+    return filteredUsers;
+  };
+
   return (
     <View style={styles.container}>
+    <View style={styles.appContainer}>
+      {/* Search bar */}
+      <TextInput
+        value={searchName}
+        placeholder="Search by Name"
+        onChangeText={(text) => setSearchName(text)}
+        style={styles.input}
+      />
+      <Button title="Search" onPress={() => setShowUsers(true)} />
+
+      {/* User input and display */}
       <TextInput
         value={name}
         placeholder="Name"
@@ -80,15 +148,39 @@ export default function App() {
 
       {showUsers && (
         <FlatList
-          data={users}
+          data={filterUsers()}
           keyExtractor={(user) => user.id.toString()}
           renderItem={({ item }) => (
-            <Text>
-              ID: {item.id}, Name: {item.name}
-            </Text>
+            <View style={styles.itemContainer}>
+            <View style={{flexDirection:'column',margin:10}}>
+              <Text>
+                ID: {item.id}, Name: {item.name}
+              </Text>
+              <Text>age:{age} email:{email}</Text>
+              </View>
+            <View style={styles.buttonView}>
+              <Button 
+              title="Delete" onPress={() => deleteUser(item.id)} />
+             
+              <Button 
+                title="Update"
+                onPress={() => {
+                  setName(item.name);
+                  setAge(item.age.toString());
+                  setEmail(item.email);
+                  setSelectedUserId(item.id);
+                }}
+              />
+              </View>
+            </View>
           )}
         />
       )}
+
+      {selectedUserId && (
+        <Button title="Save Update" onPress={updateUser} />
+      )}
+      </View>
     </View>
   );
 }
