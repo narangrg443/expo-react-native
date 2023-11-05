@@ -4,39 +4,84 @@ import { StyleSheet } from "react-native";
   container:{
     flex:1,
     justifyContent:'center',
-    alignItems:'center'
+    alignItems:'center',
+    margin:2,
+
   },
   appContainer:{
-    width:'90%',
-    height:'90%',
+   width:'90%',
+   height:'90%',
+     padding:5,
+     marginTop:20,
+     backgroundColor:'lightblue',
+  },
+  formContainer:{
+    
+   
+    padding:1,
+
+    
+  },
+  showMsg:{
+    textAlign:'center',
+    textAlignVertical:'center',
     marginTop:20,
-    margin:3,
-    backgroundColor:'green',
-    borderRadius:10,
-    padding:10,
+    color:'green',
+   
+  },
+  inputContainer:{
+    borderWidth:1,
+    borderColor:'grey',
+    borderRadius:2,
+    paddingHorizontal:8,
+    
+  },
+  buttonContainer:{
+       justifyContent:"center",
+       alignItems:'center',    backgroundColor:'green',
+      marginTop:10,
+      padding:8,
+      
+  },
+  
+  
+  
+  listContainer:{
+    flex:1,
+    padding:5,
   },
   itemContainer:{
-    
+    padding:10,
+    backgroundColor:'blue',
+  },
+  eachItem:{
     flexDirection:'row',
-    
-    backgroundColor:'lightblue',
-    margin:3,
-    justifyContent:'space-between',
-    borderRadius:5,
-  },
-  buttonView:{
-   
     margin:2,
-    borderRadius:4,
-    
+    padding:5,
+    justifyContent:'space-between',
+   backgroundColor:'green',
+   borderRadius:5,
+   
   },
-  names:{
-   width:"60%",
+  itemStyle:{
+   flex:1,
+   
    textAlign:'center',
    textAlignVertical:'center',
-   fontSize:14,
+  
+  },
+  updateDelete:{
+    flexDirection:'column',
+  },
+  listButon:{
+    marginButtom:15,
+  },
+  modalContainer:{
+    padding:25,
+    paddingTop:20,
     
   }
+
 })
 
 export default styles;

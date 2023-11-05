@@ -1,185 +1,79 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Button, Text, FlatList, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
 import styles from './style/AppStyle';
-
+import Userform from './components/Userform';
+import UserList from './components/UserList'
 export default function App() {
-  const postUrl = 'http://localhost:3000/users';
-  const getUsersUrl = 'http://localhost:3000/users';
-  const [name, setName] = useState('');
-  const [age, setAge] = useState('');
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
-  const [users, setUsers] = useState([]);
-  const [showUsers, setShowUsers] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState(null);
-  const [searchName, setSearchName] = useState('');
+  
+  const urlPost = "http://localhost:3000/users";
+  const[data,setData]=useState(null);
+   const [showList,setShowList]=useState(false);
+  const [showMsg, setShowMsg] = useState(false);
+  const [msg,setMsg]=useState('');
+  const [invalid,setInvalid]=useState(false);
+  
+  
 
-  const postData = async () => {
-    const dataToPost = {
-      name: name,
-      age: age,
-      email: email,
-    };
-
+  
+  const submitData = async (data) => {
     try {
-      const response = await fetch(postUrl, {
+      if(data.name.trim()!==''){
+        //valid data request handler
+      const response = await fetch(urlPost, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": 'application/json'
         },
-        body: JSON.stringify(dataToPost),
-      });
+        body: JSON.stringify(data)
+      }); 
 
       if (response.ok) {
-        setMessage('Post is successful');
+        console.log('Data submitted');
+        setShowMsg(true);
+        setMsg('added successfully');
       } else {
-        setMessage('Post failed');
+        throw new Error("Response error");
       }
-    } catch (error) {
-      console.error(error);
+    }else{
+      //invalide data request handler
+      setShowMsg(true);
+      setMsg('invalid data!');
+      setInvalid(true);
+      console.log('put data');
     }
-  };
-
-  const fetchUsers = async () => {
-    try {
-      const response = await fetch(getUsersUrl);
-      if (response.ok) {
-        const userData = await response.json();
-        setUsers(userData);
-        setShowUsers(true);
-      } else {
-        console.error('Failed to fetch users');
-      }
-    } catch (error) {
-      console.error(error);
     }
-  };
-
-  const deleteUser = async (userId) => {
-    try {
-      const response = await fetch(`${getUsersUrl}/${userId}`, {
-        method: 'DELETE',
-      });
-
-      if (response.ok) {
-        setMessage('User deleted successfully');
-        setUsers(users.filter((user) => user.id !== userId));
-      } else {
-        setMessage('Failed to delete user');
-      }
-    } catch (error) {
-      console.error(error);
+    catch (error) {
+      console.log(error);
     }
-  };
+  }
 
-  const updateUser = async () => {
-    const updatedUser = {
-      name: name,
-      age: age,
-      email: email,
-    };
-
-    try {
-      const response = await fetch(`${getUsersUrl}/${selectedUserId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedUser),
-      });
-
-      if (response.ok) {
-        setMessage('User updated successfully');
-        setUsers((prevUsers) =>
-          prevUsers.map((user) =>
-            user.id === selectedUserId ? { ...user, ...updatedUser } : user
-          )
-        );
-      } else {
-        setMessage('Failed to update user');
-      }
-    } catch (error) {
-      console.error(error);
+  useEffect(() => {               
+    if (showMsg) {
+      const timeout = setTimeout(function () { setShowMsg(false);setInvalid(false); }, 1500);
+      return () => clearTimeout(timeout);
     }
-  };
+  }, [showMsg]);
+  
+  
 
-  const filterUsers = () => {
-    const filteredUsers = users.filter((user) =>
-      user.name.toLowerCase().includes(searchName.toLowerCase())
-    );
-    return filteredUsers;
-  };
-
+  
+ const listHandler=()=>{
+ setShowList(true);
+ }
   return (
     <View style={styles.container}>
-    <View style={styles.appContainer}>
-      {/* Search bar */}
-      <TextInput
-        value={searchName}
-        placeholder="Search by Name"
-        onChangeText={(text) => setSearchName(text)}
-        style={styles.input}
-      />
-      <Button title="Search" onPress={() => setShowUsers(true)} />
+      <View style={styles.appContainer}>
+ {
+  showList ? (
+    <UserList  onPress={()=>{setShowList(false)}}/>
+  ) : (
+    <>
+      <Userform onPress={submitData} getList={listHandler} />
+      {showMsg ? <Text style={[styles.showMsg, invalid && { color: 'red' }]}>{msg}</Text> : null}
+    </>
+  )
+}
 
-      {/* User input and display */}
-      <TextInput
-        value={name}
-        placeholder="Name"
-        onChangeText={(text) => setName(text)}
-        style={styles.input}
-      />
-      <TextInput
-        value={age}
-        placeholder="Age"
-        onChangeText={(text) => setAge(text)}
-        style={styles.input}
-      />
-      <TextInput
-        value={email}
-        placeholder="Email"
-        onChangeText={(text) => setEmail(text)}
-        style={styles.input}
-      />
-      <Button title="Post" onPress={postData} />
-      <Button title="Show Users" onPress={fetchUsers} />
-
-      {message ? <Text>{message}</Text> : null}
-
-      {showUsers && (
-        <FlatList
-          data={filterUsers()}
-          keyExtractor={(user) => user.id.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.itemContainer}>
-            <View style={{flexDirection:'column',margin:10}}>
-              <Text>
-                ID: {item.id}, Name: {item.name}
-              </Text>
-              <Text>age:{age} email:{email}</Text>
-              </View>
-            <View style={styles.buttonView}>
-              <Button 
-              title="Delete" onPress={() => deleteUser(item.id)} />
-             
-              <Button 
-                title="Update"
-                onPress={() => {
-                  setName(item.name);
-                  setAge(item.age.toString());
-                  setEmail(item.email);
-                  setSelectedUserId(item.id);
-                }}
-              />
-              </View>
-            </View>
-          )}
-        />
-      )}
-
-      {selectedUserId && (
-        <Button title="Save Update" onPress={updateUser} />
-      )}
       </View>
     </View>
   );

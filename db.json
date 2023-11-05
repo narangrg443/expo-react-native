@@ -1,46 +1,19 @@
 {
   "users": [
     {
-      "name": "nabin",
-      "age": "43",
-      "email": "egege",
-      "id": 4
+      "name": "hari ",
+      "age": "12",
+      "id": 2
     },
     {
-      "name": "donam",
-      "age": "43",
-      "email": "egege",
+      "name": "efeffffffffffffffffffffff",
+      "age": "efeffefef",
+      "id": 3
+    },
+    {
+      "name": "efeffeef",
+      "age": "feeffeefef",
       "id": 5
-    },
-    {
-      "name": "donam",
-      "age": "43",
-      "email": "egege",
-      "id": 6
-    },
-    {
-      "name": "prabin",
-      "age": "45",
-      "email": "hello@gmail.com",
-      "id": 7
-    },
-    {
-      "name": "prabin",
-      "age": "45",
-      "email": "hello@gmail.com",
-      "id": 8
-    },
-    {
-      "name": "prabin",
-      "age": "45",
-      "email": "hello@gmail.com",
-      "id": 9
-    },
-    {
-      "name": "prabin",
-      "age": "45",
-      "email": "hello@gmail.com",
-      "id": 10
     }
   ]
 }
