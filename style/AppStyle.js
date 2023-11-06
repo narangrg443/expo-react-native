@@ -77,9 +77,16 @@ import { StyleSheet } from "react-native";
     marginButtom:15,
   },
   modalContainer:{
+    justifyContent:'center',
+    alignItems:'center',
     padding:25,
-    paddingTop:20,
+    paddingTop:50,
     
+    
+    
+  },
+  modalChildContainer:{
+    padding:50,
   }
 
 })

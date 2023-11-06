@@ -8,6 +8,16 @@ const UserList = ({ onPress }) => {
   const [name, setName] = useState('');
   const [age, setAge] = useState('');
   const [isUpdateModalVisible, setUpdateModalVisible] = useState(false);
+  const [filteredUsers, setFilteredUsers] = useState([]); // Initialize with the same data as users
+  const [searchText, setSearchText] = useState('');
+
+  const searchFilter = (text) => {
+    setSearchText(text);
+    const lowerText = text.toLowerCase();
+    setFilteredUsers(
+      users.filter((item) => item.name.toLowerCase().includes(lowerText))
+    );
+  };
 
   const getData = async () => {
     try {
@@ -15,6 +25,7 @@ const UserList = ({ onPress }) => {
       if (response.ok) {
         const users = await response.json();
         setUsers(users);
+        setFilteredUsers(users); // Initialize filteredUsers with full data
       } else {
         console.log('Response error');
       }
@@ -54,7 +65,6 @@ const UserList = ({ onPress }) => {
   // Update data
   const updateData = async (id, name, age) => {
     try {
-      
       const response = await fetch(`http://localhost:3000/users/${id}`, {
         method: 'PUT',
         headers: {
@@ -77,54 +87,50 @@ const UserList = ({ onPress }) => {
     }
   };
 
-  const memoizedFlatList = useMemo(() => {
-    return (
-      <FlatList
-        data={users}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.eachItem}>
-            <Text style={styles.itemStyle}>
-              {item.id}:{item.name}
-            </Text>
-            <Text style={styles.itemStyle}>age:{item.age}</Text>
-
-            <View style={styles.updateDelete}>
-              <Button title="delete" onPress={() => deleteData(item.id)} />
-              <Button title="update" onPress={() => openUpdateModal(item.id)} />
-            </View>
-          </View>
-        )}
-      />
-    );
-  }, [users]);
-
   return (
     <View style={styles.listContainer}>
       <View style={styles.listButton}>
         <Button title="Add" onPress={onPress} />
       </View>
-      <View style={{ marginTop: 10, flexDirection: 'row' }}>
-        {memoizedFlatList}
+      <View>
+        <TextInput
+          value={searchText}
+          onChangeText={searchFilter}
+          placeholder="Search names"
+        />
       </View>
-
+      <View style={{ marginTop: 10, flexDirection: 'row' }}>
+        <FlatList
+          data={filteredUsers}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.eachItem}>
+              <Text style={styles.itemStyle}>
+                {item.id}:{item.name}
+              </Text>
+              <Text style={styles.itemStyle}>age:{item.age}</Text>
+              <View style={styles.updateDelete}>
+                <Button title="delete" onPress={() => deleteData(item.id)} />
+                <Button title="update" onPress={() => openUpdateModal(item.id)} />
+              </View>
+            </View>
+          )}
+        />
+      </View>
+<View style={styles.modalContainer}>
       {/* Update Modal */}
-      <Modal
-        visible={isUpdateModalVisible}
-        animationType="slide"
-      >
-        <View style={styles.modalContainer}>
+      <Modal visible={isUpdateModalVisible} animationType="slide">
+        <View style={styles.modalChildContainer}>
           <Text>Update User</Text>
           <TextInput
-          style={[styles.inputContainer,{marginBottom:5}]}
-            placeholder={name}
+            style={styles.inputContainer}
+            placeholder="Name"
             value={name}
             onChangeText={(text) => setName(text)}
           />
           <TextInput
-            style={[styles.inputContainer,{marginBottom:5}]}
-           
-            placeholder={age}
+            style={styles.inputContainer}
+            placeholder="Age"
             value={age}
             onChangeText={(text) => setAge(text)}
           />
@@ -132,6 +138,7 @@ const UserList = ({ onPress }) => {
           <Button title="Cancel" onPress={() => setUpdateModalVisible(false)} />
         </View>
       </Modal>
+      </View>
     </View>
   );
 };
