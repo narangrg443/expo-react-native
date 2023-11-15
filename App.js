@@ -1,14 +1,16 @@
 import React from 'react';
-import { Provider } from 'react-redux'; // Assuming you are using react-redux for Redux integration
-import Counter from './components/Counter';
-import store from './context/store';
+import {View} from 'react-native';
+import Section from './components/section';
+import State from './components/state';
+import MyApp from './components/test';
 
-const App = () => {
-  return (
-    <Provider store={store}>
-      <Counter />
-    </Provider>
-  );
-};
 
-export default App;
+export default function App(){
+  return(
+    <View>
+ 
+<Section/>
+    </View>
+    
+    )
+}
