@@ -1,16 +1,16 @@
-import React from 'react';
-import {View} from 'react-native';
-import Section from './components/section';
-import State from './components/state';
-import MyApp from './components/test';
+import { StatusBar } from 'expo-status-bar';
+import React,{useEffect,useState} from 'react'
+import { StyleSheet, Text, View } from 'react-native';
+import styles from './style/style';
 
+export default function App() {
 
-export default function App(){
-  return(
-    <View>
- 
-<Section/>
+  return (
+    <View style={styles.container}>
+    <Text>hellfelo  rello rello mello 
+    </Text>
+   
+      <StatusBar style="auto" />
     </View>
-    
-    )
+  );
 }
